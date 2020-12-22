@@ -25,9 +25,13 @@ def listing(request, title):
     comments = Comment.objects.filter(listing=listing)
     
 
-    if Listing.isOpen == False:
-        winner = Bid.objects.filter(listing=listing).order_by('-bid').first().bidder
-        closedMessage = f'Listing closed, winner: {winner}!'
+    if listing.isOpen == False:
+        print('im here')
+        if Bid.objects.filter(listing=listing).exists():
+            winner = Bid.objects.filter(listing=listing).order_by('-bid').first().bidder
+            closedMessage = f'Listing closed, winner: {winner}'
+        else:
+            closedMessage = f'Listing closed by creator'
 
     if request.POST:
         if 'addWatchlist' in request.POST:
@@ -46,15 +50,26 @@ def listing(request, title):
             else:
                 Listing.objects.filter(title=title).update(price=bid)
                 price = bid
-                bidCreated = Bid(bidder = user, listing = listing, bid = bid)
+                bidCreated = Bid(bidder = user, listing = listing.title, bid = bid)
                 bidCreated.save()
                 bidMessage = "Bid placed!"
+
+        if 'submitComment' in request.POST:
+            comment = request.POST.get("newComment")
+            if comment == "":
+                pass
+            else:
+                newComment = Comment(listing=listing, commenter=user, comment=comment)
+                newComment.save()
 
         if 'closeButton' in request.POST:
             Listing.objects.filter(title=title).update(isOpen = False)
             isOpen = False
-            winner = Bid.objects.filter(listing=listing).order_by('-bid').first().bidder
-            closedMessage = f'Listing closed, winner: {winner}'
+            if Bid.objects.filter(listing=listing).exists():
+                winner = Bid.objects.filter(listing=listing).order_by('-bid').first().bidder
+                closedMessage = f'Listing closed, winner: {winner}'
+            else:
+                closedMessage = f'Listing closed by creator'
 
             
     return render(request, "auctions/listing.html", {
@@ -124,7 +139,6 @@ def register(request):
         return render(request, "auctions/register.html")
 
 def create(request):
-    # DEFINE WHERE TO GET CATEGORIES FROM (SQL TABLE?)
     categories = Category.objects.all()
     return render(request, "auctions/create.html", {
         "categories": categories

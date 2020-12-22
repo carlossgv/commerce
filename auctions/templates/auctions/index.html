@@ -1,18 +1,20 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+    <h2 class="container" style="text-align: center;">Active Listings</h2>
 
     {% for listing in listings %}
-    <a href="{% url 'listing' title=listing.title %}">
-        <div class="listing" style="margin-top: 25px; border-top: black solid 3px;">
-            <div>Title: {{ listing.title }}</div>
-            <div>Description: {{ listing.description }}</div>
-            <div>Category: {{ listing.category }}</div>
-            <div>Price: {{ listing.price }} USD</div>
-            <image class="img-thumbnail" style="max-width: 50%;" src="{{ listing.imageURL }}"></image>
+    
+    <div class="card container" style="max-width: 50vh; padding-top: 20px; margin-top: 20px;">
+        <img class="card-img-top" src="{{ listing.imageURL }}">
+        <div class="card-body" style="background-color: rgb(213, 238, 238); margin: 0 0 15px 0">
+            <h3 class="card-title">{{ listing.title }}</h3>
+            <h5 class="card-subtitle">Category: {{ listing.category }}</h5>
+            <h5 class="card-subtitle">Current Price: {{ listing.price }} USD</h5>
+            <p class="card-text">{{ listing.description }}</p>
+            <a class="btn btn-primary" href="{% url 'listing' title=listing.title %}">Go to listing</a>
         </div>
-    </a>
+    </div>
 
     {% endfor %}
 {% endblock %}

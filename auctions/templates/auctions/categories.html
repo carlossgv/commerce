@@ -1,13 +1,11 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Categories Available</h2>
+    <h2 class="container" style="text-align: center; margin-bottom: 20px;">Categories Available</h2>
 
     {% for category in categories %}
-    <div>
-    <a href="{% url 'category' category=category.name %}">
-        {{ category }}
-    </a>
+    <div class="list-group container" style="text-align: center; max-width: 30vh;">
+        <a class="list-group-item list-group-item-action h5" href="{% url 'category' category=category.name %}">{{ category }}</a>
     </div>
 
     {% endfor %}
