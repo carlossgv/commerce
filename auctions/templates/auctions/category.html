@@ -1,14 +1,13 @@
 {% extends "auctions/layout.html" %}
 
 {% block body %}
-    <h2>Active Listings</h2>
+<h2>Active Listings in {{ category }}</h2>
 
     {% for listing in listings %}
     <a href="{% url 'listing' title=listing.title %}">
         <div class="listing" style="margin-top: 25px; border-top: black solid 3px;">
             <div>Title: {{ listing.title }}</div>
             <div>Description: {{ listing.description }}</div>
-            <div>Category: {{ listing.category }}</div>
             <div>Price: {{ listing.price }} USD</div>
             <image class="img-thumbnail" style="max-width: 50%;" src="{{ listing.imageURL }}"></image>
         </div>

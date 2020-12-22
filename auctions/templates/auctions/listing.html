@@ -1,0 +1,55 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2>{{ title }}</h2>
+    <h3> {{ closedMessage }}</h3>
+    
+    <div>Description: {{ description }}</div>
+    <div>Price: {{ price }} USD</div>
+    <div>Caterory: {{ category }}</div>
+    <image class="img-thumbnail" style="max-width: 80%;" src="{{ imageURL }}"></image>
+    {% for comment in comments %}
+        <div class="comment" style="border: grey dotted 2px;">
+            {{ comment }}
+        </div>
+    {% endfor %}
+
+    
+    {% if isOpen %}
+    {% if user.is_authenticated %}
+    <div>
+        <h3>{{ watchlistMessage }}</h3>
+        <form id="watchlistForm" method="POST">
+            {% csrf_token %}
+            <input type="submit" value="Add to watchlist" name="addWatchlist">
+            <input type="submit" value="Remove from watchlist" name="removeWatchlist">
+        </form>
+    </div>
+    <div>
+        <form id="bidForm" method="POST">
+            <h3>{{ bidMessage }}</h3>
+            {% csrf_token %}
+            <label for="bid">Bid:</label>
+            <input type="number" min="0" placeholder="{{ price }}"name="bidAmmount">
+            <input type="submit" value="Make bid" name="makeBid">
+        </form>
+    </div>
+    <div>
+        <form id="commentForm" method="POST">
+            {% csrf_token %}
+            <label for="comment">Add new comment:</label>
+            <textarea placeholder="Comment"></textarea>
+            <input type="submit" value="Submit comment" name="comment">
+        </form>
+    </div>
+    {% if request.user == creator %}
+    <form id="closeForm" method="POST">
+        {% csrf_token %}
+        <input type="submit" name="closeButton" value="Close Auction">
+    </form>
+    {% endif %}
+    {% endif %}
+    {% endif %}
+    
+    
+{% endblock %}
