@@ -4,10 +4,10 @@
 
     <h2 class="container" style="text-align: center; margin-bottom: 20px;">Create New Listing</h2>
 
-    <form class="container" action="{% url 'create' %}" method="post" style="max-width: 50vh;">
+    <form class="container" action="{% url 'create' %}" method="POST" style="max-width: 50vh;">
         {% csrf_token %}
         <div class="form-group">
-            <input class="form-control" autofocus type="text" name="username" placeholder="Title">
+            <input class="form-control" autofocus type="text" name="title" placeholder="Title">
         </div>
         <div class="form-group">
             <textarea class="form-control" name="description" placeholder="Description"></textarea>
@@ -16,14 +16,14 @@
             <input class="form-control" type="number" name="startingBid" placeholder="Starting Bid" min="0">
         </div>
         <div class="form-group">
-            <select name="categories">
+            <select name="category">
                 {% for category in categories %}
                     <option value="{{ category }}">{{ category }}</option>
                 {% endfor %}
             </select>    
         </div>
         <div class="form-group">
-            <input class="form-control" type="url" name="imageURL" placeholder="Paste Image URL">
+            <input class="form-control" type="imageURL" name="imageURL" placeholder="Paste Image URL">
         </div>
         <input class="btn btn-primary" type="submit" value="Create">
     </form>

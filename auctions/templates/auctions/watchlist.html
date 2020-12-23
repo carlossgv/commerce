@@ -1,0 +1,22 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+    <h2 class="container" style="text-align: center;">Your Watchlist</h2>
+
+    <h2 class="container" style="text-align: center;">{{ message }}</h2>
+
+    {% for x in listings %}
+    
+    <div class="card container" style="max-width: 50vh; padding-top: 20px; margin-top: 20px;">
+        <img class="card-img-top" src="{{ x.listing.imageURL }}">
+        <div class="card-body" style="background-color: rgb(213, 238, 238); margin: 0 0 15px 0">
+            <h3 class="card-title">{{ x.listing.title }}</h3>
+            <h5 class="card-subtitle">Category: {{ x.listing.category }}</h5>
+            <h5 class="card-subtitle">Current Price: {{ x.listing.price }} USD</h5>
+            <p class="card-text">{{ x.listing.description }}</p>
+            <a class="btn btn-primary" href="{% url 'listing' title=x.listing.title %}">Go to listing</a>
+        </div>
+    </div>
+
+    {% endfor %}
+{% endblock %}

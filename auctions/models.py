@@ -4,8 +4,6 @@ from django.core.validators import MinValueValidator
 from decimal import Decimal
 
 
-# VERIFICAR EL TEMA DE LAS DEPENDENCIAS
-
 class User(AbstractUser):
     pass
 
@@ -27,6 +25,10 @@ class Listing(models.Model):
     def __str__(self):
         return f"{self.id} | {self.creator} | {self.title} | {self.price}"
 
+class Watchlist(models.Model):
+    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listingWatched", default="")
+    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="userWatching", default="")
+
 class Bid(models.Model):
     bidder = models.ForeignKey(User, on_delete=models.CASCADE, related_name="bidder", default="")
     listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listingBid", default="")
@@ -43,8 +45,5 @@ class Comment(models.Model):
     def __str__(self):
         return f"{self.commenter} commented: {self.comment}"
 
-class Watchlist(models.Model):
-    listing = models.ForeignKey(Listing, on_delete=models.CASCADE, related_name="listingWatched", default="")
-    user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="userWatching", default="")
 
 

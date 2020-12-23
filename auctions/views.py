@@ -13,16 +13,33 @@ def index(request):
         "listings": Listing.objects.all()
     })
 
+def watchlist(request):
+    if Watchlist.objects.filter(user = request.user).exists():
+        listings = Watchlist.objects.filter(user = request.user)
+        message = ""
+    else:
+        message = "You are not watching any listing!"
+        listings = []
+
+
+    return render(request, "auctions/watchlist.html", {
+        "listings": listings,
+        "message": message,
+        "watchlist": watchlist
+    })
 
 def listing(request, title):
     listing = Listing.objects.get(title=title)
     price = listing.price
     isOpen = listing.isOpen
-    user = request.user
     watchlistMessage = ""
     bidMessage = ""
     closedMessage = ""
     comments = Comment.objects.filter(listing=listing)
+    watchlistButton = ""
+
+    if request.user.is_authenticated:
+        user = request.user
     
 
     if listing.isOpen == False:
@@ -33,13 +50,17 @@ def listing(request, title):
         else:
             closedMessage = f'Listing closed by creator'
 
+
+
     if request.POST:
         if 'addWatchlist' in request.POST:
             comment = Watchlist(listing = listing, user = user)
             if Watchlist.objects.filter(listing = listing, user = user).exists():
                 watchlistMessage = "Already on watchlist!"
+                watchlistButton = False
             else:
                 comment.save()
+                watchlistButton = True
         elif 'removeWatchlist' in request.POST and Watchlist.objects.filter(listing = listing, user = user).exists():
             Watchlist.objects.filter(listing = listing, user = user).delete()
 
@@ -50,7 +71,7 @@ def listing(request, title):
             else:
                 Listing.objects.filter(title=title).update(price=bid)
                 price = bid
-                bidCreated = Bid(bidder = user, listing = listing.title, bid = bid)
+                bidCreated = Bid(bidder = user, listing = listing, bid = bid)
                 bidCreated.save()
                 bidMessage = "Bid placed!"
 
@@ -71,6 +92,11 @@ def listing(request, title):
             else:
                 closedMessage = f'Listing closed by creator'
 
+    if request.user.is_authenticated:
+        if Watchlist.objects.filter(listing = listing, user = user).exists():
+            watchlistButton = False
+        else:
+            watchlistButton = True
             
     return render(request, "auctions/listing.html", {
         "title": listing.title,
@@ -83,7 +109,8 @@ def listing(request, title):
         "watchlistMessage": watchlistMessage,
         "bidMessage": bidMessage,
         "isOpen": isOpen,
-        "closedMessage": closedMessage
+        "closedMessage": closedMessage,
+        "watchlistButton": watchlistButton
     })    
 
 
@@ -140,9 +167,27 @@ def register(request):
 
 def create(request):
     categories = Category.objects.all()
+
+    if request.method == "POST":
+        
+        title = request.POST["title"]
+        description = request.POST["description"]
+        startingBid = request.POST["startingBid"]
+        category = request.POST["category"]
+
+        category = Category.objects.get(name=category)
+
+        imageURL = request.POST["imageURL"]
+        newListing = Listing(title=title, description=description, price=startingBid, category=category,imageURL=imageURL,creator=request.user)
+        newListing.save()
+
+        return HttpResponseRedirect(f"listing/{title}")
+
+    
     return render(request, "auctions/create.html", {
         "categories": categories
     })
+
 
 
 def categories(request):

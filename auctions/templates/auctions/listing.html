@@ -29,8 +29,11 @@
             <h3 style="text-align: center; margin-bottom: 30px;">{{ watchlistMessage }}</h3>
             <form id="watchlistForm" method="POST">
                 {% csrf_token %}
-                <input type="submit" value="Add to watchlist" name="addWatchlist">
-                <input type="submit" value="Remove from watchlist" name="removeWatchlist">
+                {% if watchlistButton %}
+                    <input type="submit" value="Add to watchlist" name="addWatchlist">
+                {% else %}    
+                    <input type="submit" value="Remove from watchlist" name="removeWatchlist">
+                {% endif %}
             </form>
         </div>
         <div class="container" style="margin-top: 30px; text-align: center;">
